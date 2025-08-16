@@ -9,7 +9,6 @@ from store.models.product import ProductModel
 from store.schemas.product import ProductIn, ProductOut, ProductUpdate, ProductUpdateOut
 from store.core.exceptions import NotFoundException
 
-
 class ProductUsecase:
     def __init__(self) -> None:
         self.client: AsyncIOMotorClient = db_client.get()
@@ -42,7 +41,7 @@ class ProductUsecase:
 
     async def update(self, id: UUID, body: ProductUpdate) -> ProductUpdateOut:
         update_data = body.model_dump(exclude_none=True)
-        update_data["updated_at"] = datetime.utcnow()  # sempre atualiza a data
+        update_data["updated_at"] = datetime.utcnow()
 
         result = await self.collection.find_one_and_update(
             filter={"id": id},
@@ -63,6 +62,5 @@ class ProductUsecase:
         result = await self.collection.delete_one({"id": id})
 
         return True if result.deleted_count > 0 else False
-
 
 product_usecase = ProductUsecase()
